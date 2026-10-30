@@ -413,9 +413,27 @@
     </div>
   </div>
 
+  <!-- Lightbox Modal for Full-Size Product & Customization Preview -->
+  <div class="modal-overlay" id="productImageLightboxModal" role="dialog" aria-modal="true" aria-labelledby="lightboxModalTitle">
+    <div class="modal-dialog" style="max-width: 760px; text-align: center;">
+      <div class="modal-header">
+        <h3 id="lightboxModalTitle" style="font-size: 1.25rem;">Garment Inspection & Preview</h3>
+        <button class="modal-close-btn" id="closeLightboxModalBtn" aria-label="Close preview">&times;</button>
+      </div>
+      <div class="modal-body" id="lightboxModalBody" style="padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: var(--bg-warm-ivory); min-height: 420px;">
+        <!-- Injected dynamically: high-res photo or high-precision custom SVG preview -->
+      </div>
+      <div class="modal-footer" style="justify-content: space-between; align-items: center;">
+        <span id="lightboxModalCaption" style="font-size: 0.84rem; color: var(--text-muted-grey);"></span>
+        <button type="button" class="btn btn-secondary btn-sm" id="closeLightboxModalFooterBtn">Close Preview</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="js/products.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/garment-svg.js"></script>
   <script src="js/bulk-builder.js"></script>
 </body>
 </html>

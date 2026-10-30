@@ -1,14 +1,19 @@
 /**
- * Vanguard Textile Co. - Smart Bulk Order Builder
- * Section 7 & 8 Requirements:
- * - Multi-product selection
+ * Vanguard Textile Co. - Enterprise Order Architecture (Smart Bulk Order Builder)
+ * Section 7 & 8 Requirements & Product Showcase Visuals:
+ * - Multi-product selection with visual thumbnails & gallery strip
+ * - Prominent Product Showcase Display Card with large customized or catalogue apparel view
+ * - Seamless toggle between Front & Back preview thumbnails (or multi-angle catalogue photos)
+ * - Complete garment specifications: Style Code, Product Type, Fabric & GSM, MOQ
+ * - Uploaded logo / artwork preview chip with precise placement label
+ * - High-resolution Lightbox Modal inspection with zoom hint
  * - Visual color swatches & multi-color selection
  * - Size-wise quantity matrix (S, M, L, XL, 2XL, 3XL)
- * - Automatic live calculations (per-color, per-product, overall enquiry total)
- * - Whole number, non-negative, MOQ satisfaction validation
+ * - Live calculations (per-color, per-product, overall volume total, MOQ satisfaction)
  * - Customization options & print method selection
  * - Client-side multiple file drag-and-drop & preview
- * - Live summary breakdown
+ * - Live summary breakdown with product thumbnails
+ * - Professional confirmation screen with visual order summary
  */
 
 // Global builder state
@@ -41,6 +46,7 @@ function initBulkOrderBuilder() {
   renderCustomizationOptions();
   renderPrintMethods();
   initFileUploadZone();
+  initLightboxModal();
   updateLiveSummary();
 
   // 3. Attach Form listeners
@@ -63,7 +69,7 @@ function loadSavedState(paramProductId) {
       const parsed = JSON.parse(saved);
       if (parsed.items && Array.isArray(parsed.items) && parsed.items.length > 0) {
         BulkBuilderState.products = parsed.items.map(item => {
-          const original = getProductById(item.id);
+          const original = getProductById(item.id) || PRODUCTS_DATA[0];
           const colors = item.selectedColors || [original.colors[0].name];
           const quantities = item.quantities || {};
 
@@ -76,24 +82,46 @@ function loadSavedState(paramProductId) {
 
           return {
             id: original.id,
-            name: original.name,
+            name: item.name || original.name,
             code: original.code,
             category: original.category,
+            productType: original.productType || 'Custom Apparel',
             moq: original.moq,
             fabric: original.fabric,
             gsm: original.gsm,
+            images: original.images || [],
             availableColors: original.colors,
             selectedColors: colors,
-            quantities: quantities
+            quantities: quantities,
+            customization: item.customization || null,
+            activePreviewView: 'front',
+            activePreviewImageIndex: 0
           };
         });
 
+        // If paramProduct provided and not in builder list, add it
         if (initialProduct && !BulkBuilderState.products.some(p => p.id === initialProduct.id)) {
-          // Add param product
           addProductToState(initialProduct);
         }
 
+        // Restore studio options if transferred
+        if (parsed.customizationOptions && Array.isArray(parsed.customizationOptions) && parsed.customizationOptions.length > 0) {
+          BulkBuilderState.customizationOptions = parsed.customizationOptions;
+        }
+        if (parsed.printMethod) {
+          BulkBuilderState.printMethod = parsed.printMethod;
+        }
+        if (parsed.uploadedFiles && Array.isArray(parsed.uploadedFiles)) {
+          BulkBuilderState.uploadedFiles = parsed.uploadedFiles;
+        }
+        if (parsed.additionalNotes) {
+          BulkBuilderState.additionalNotes = parsed.additionalNotes;
+          const notesEl = document.getElementById('builderAdditionalNotes');
+          if (notesEl) notesEl.value = parsed.additionalNotes;
+        }
+
         BulkBuilderState.activeProductId = initialProduct ? initialProduct.id : BulkBuilderState.products[0].id;
+        checkStudioDesignContinuity();
         return;
       }
     }
@@ -101,10 +129,49 @@ function loadSavedState(paramProductId) {
     console.error('Failed to parse saved bulk enquiry:', e);
   }
 
-  // Fallback: Default to Apex 220 GSM or param
+  // Fallback: Default to param or Apex 220 GSM
   const baseProd = initialProduct || PRODUCTS_DATA[0];
   addProductToState(baseProd);
   BulkBuilderState.activeProductId = baseProd.id;
+  checkStudioDesignContinuity();
+}
+
+/**
+ * Cross-check studio design localStorage for customization continuity
+ */
+function checkStudioDesignContinuity() {
+  try {
+    const studioSaved = localStorage.getItem('vtc_studio_design');
+    if (studioSaved) {
+      const sDesign = JSON.parse(studioSaved);
+      if (sDesign && sDesign.garmentId) {
+        const garmentMapping = {
+          'round-neck': 'rn-apex-220',
+          'polo': 'polo-honeycomb-240',
+          'oversized': 'rn-heavy-260',
+          'sports': 'sport-dryfit-180',
+          'hoodie': 'hoodie-fleece-360'
+        };
+        const matchingProdId = garmentMapping[sDesign.garmentId];
+        const targetProd = BulkBuilderState.products.find(p => p.id === matchingProdId);
+        if (targetProd && !targetProd.customization) {
+          targetProd.customization = {
+            garmentId: sDesign.garmentId,
+            color: sDesign.currentColor,
+            colorName: sDesign.currentColorName,
+            artworks: sDesign.artworks,
+            printMethod: sDesign.printMethod,
+            hasCustomDesign: ((sDesign.artworks?.front?.length > 0) || (sDesign.artworks?.back?.length > 0))
+          };
+          if (!targetProd.selectedColors.includes(sDesign.currentColorName)) {
+            targetProd.selectedColors.unshift(sDesign.currentColorName);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Studio continuity check:', err);
+  }
 }
 
 function addProductToState(prod) {
@@ -114,30 +181,54 @@ function addProductToState(prod) {
     name: prod.name,
     code: prod.code,
     category: prod.category,
+    productType: prod.productType || 'Apparel',
     moq: prod.moq,
     fabric: prod.fabric,
     gsm: prod.gsm,
+    images: prod.images || [],
     availableColors: prod.colors,
     selectedColors: [defaultColor],
     quantities: {
       [defaultColor]: { S: 10, M: 25, L: 25, XL: 15, "2XL": 5, "3XL": 0 }
-    }
+    },
+    customization: null,
+    activePreviewView: 'front',
+    activePreviewImageIndex: 0
   });
 }
 
 function persistState() {
   try {
     localStorage.setItem('vtc_bulk_enquiry', JSON.stringify({
-      items: BulkBuilderState.products
+      items: BulkBuilderState.products.map(p => ({
+        id: p.id,
+        name: p.name,
+        code: p.code,
+        category: p.category,
+        productType: p.productType,
+        moq: p.moq,
+        fabric: p.fabric,
+        gsm: p.gsm,
+        images: p.images,
+        selectedColors: p.selectedColors,
+        quantities: p.quantities,
+        customization: p.customization || null
+      })),
+      customizationOptions: BulkBuilderState.customizationOptions,
+      printMethod: BulkBuilderState.printMethod,
+      uploadedFiles: BulkBuilderState.uploadedFiles,
+      additionalNotes: BulkBuilderState.additionalNotes
     }));
-    updateHeaderEnquiryBadge();
+    if (typeof updateHeaderEnquiryBadge === 'function') {
+      updateHeaderEnquiryBadge();
+    }
   } catch (e) {
     console.warn('Could not persist to storage:', e);
   }
 }
 
 /**
- * Render Product Selector Tabs & "Add Product" Dropdown
+ * Render Product Selector Tabs & Selected Products Strip & Add Dropdown
  */
 function renderProductSelector() {
   const container = document.getElementById('builderProductPicker');
@@ -146,15 +237,21 @@ function renderProductSelector() {
   const activeId = BulkBuilderState.activeProductId;
 
   container.innerHTML = `
-    <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 20px;">
-      ${BulkBuilderState.products.map(p => `
-        <button type="button" class="product-picker-pill ${p.id === activeId ? 'active' : ''}" data-id="${p.id}">
-          <span>${p.name}</span>
-          ${BulkBuilderState.products.length > 1 ? `
-            <span class="remove-product-btn" data-remove="${p.id}" style="margin-left: 6px; font-weight: 700; opacity: 0.7;" title="Remove this product">&times;</span>
-          ` : ''}
-        </button>
-      `).join('')}
+    <!-- Product Picker Pills & Add Dropdown -->
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px;">
+      ${BulkBuilderState.products.map(p => {
+        const orig = getProductById(p.id) || PRODUCTS_DATA[0];
+        const thumb = (orig.images && orig.images[0]) || '';
+        return `
+          <button type="button" class="product-picker-pill ${p.id === activeId ? 'active' : ''}" data-id="${p.id}">
+            <img src="${thumb}" alt="${p.name}" class="pill-thumb-mini">
+            <span>${p.name}</span>
+            ${BulkBuilderState.products.length > 1 ? `
+              <span class="remove-product-btn" data-remove="${p.id}" style="margin-left: 6px; font-weight: 700; opacity: 0.7;" title="Remove this product">&times;</span>
+            ` : ''}
+          </button>
+        `;
+      }).join('')}
 
       <!-- Add Another Product Dropdown -->
       <div style="position: relative; display: inline-block;">
@@ -166,13 +263,59 @@ function renderProductSelector() {
         </select>
       </div>
     </div>
+
+    <!-- Selected Products Visual Gallery Strip -->
+    <div class="selected-products-strip">
+      ${BulkBuilderState.products.map(p => {
+        const orig = getProductById(p.id) || PRODUCTS_DATA[0];
+        const thumb = (orig.images && orig.images[0]) || '';
+        const isCustom = !!(p.customization && (p.customization.hasCustomDesign || p.customization.color));
+        const colorName = p.customization?.colorName || p.selectedColors[0] || orig.colors[0].name;
+        const colorObj = orig.colors.find(c => c.name === colorName) || { hex: p.customization?.color || '#222' };
+
+        // Sum quantities for this product
+        let pTotal = 0;
+        Object.values(p.quantities || {}).forEach(qRow => {
+          pTotal += Object.values(qRow).reduce((s, n) => s + (parseInt(n, 10) || 0), 0);
+        });
+        const satisfiesMoq = pTotal >= p.moq;
+
+        return `
+          <div class="selected-strip-item ${p.id === activeId ? 'is-active' : ''}" data-id="${p.id}" title="Click to view and configure ${p.name}">
+            <img src="${thumb}" alt="${p.name}" class="selected-strip-thumb">
+            <div class="selected-strip-info">
+              <div class="selected-strip-title">${p.name}</div>
+              <div class="selected-strip-meta">
+                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${colorObj.hex}; border: 1px solid rgba(0,0,0,0.15);"></span>
+                <span>${colorName}</span>
+                <span>&bull;</span>
+                <span style="font-weight: 700; color: ${satisfiesMoq ? 'var(--color-success)' : 'var(--accent-terracotta)'};">${pTotal} pcs</span>
+              </div>
+            </div>
+            ${isCustom ? `
+              <span class="tag" style="position: absolute; top: 6px; right: 6px; font-size: 0.62rem; padding: 2px 6px; background: var(--accent-terracotta); color: #fff; font-weight: 700;">Custom</span>
+            ` : ''}
+          </div>
+        `;
+      }).join('')}
+    </div>
   `;
 
-  // Attach tab switch events
+  // Attach tab switch events (pills)
   container.querySelectorAll('.product-picker-pill').forEach(btn => {
     btn.addEventListener('click', (e) => {
       if (e.target.classList.contains('remove-product-btn')) return;
       BulkBuilderState.activeProductId = btn.getAttribute('data-id');
+      renderProductSelector();
+      renderActiveProductConfiguration();
+      updateLiveSummary();
+    });
+  });
+
+  // Attach strip item switch events
+  container.querySelectorAll('.selected-strip-item').forEach(item => {
+    item.addEventListener('click', () => {
+      BulkBuilderState.activeProductId = item.getAttribute('data-id');
       renderProductSelector();
       renderActiveProductConfiguration();
       updateLiveSummary();
@@ -223,7 +366,7 @@ function renderProductSelector() {
 }
 
 /**
- * Render Color & Size-Matrix Configuration for the active product
+ * Render Product Showcase Card & Color & Size-Matrix Configuration for active product
  */
 function renderActiveProductConfiguration() {
   const container = document.getElementById('activeProductConfigArea');
@@ -232,21 +375,228 @@ function renderActiveProductConfiguration() {
   const current = BulkBuilderState.products.find(p => p.id === BulkBuilderState.activeProductId);
   if (!current) return;
 
-  const original = getProductById(current.id);
+  const original = getProductById(current.id) || PRODUCTS_DATA[0];
 
-  container.innerHTML = `
-    <div style="background-color: var(--bg-warm-ivory); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 20px; margin-bottom: 24px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+  // Calculate totals for active product
+  let currentTotalPieces = 0;
+  const sizeDistributionMap = { S: 0, M: 0, L: 0, XL: 0, "2XL": 0, "3XL": 0 };
+  Object.values(current.quantities || {}).forEach(qRow => {
+    Object.entries(qRow).forEach(([sz, val]) => {
+      const count = parseInt(val, 10) || 0;
+      sizeDistributionMap[sz] = (sizeDistributionMap[sz] || 0) + count;
+      currentTotalPieces += count;
+    });
+  });
+
+  const isMoqMet = currentTotalPieces >= current.moq;
+  const diffMoq = current.moq - currentTotalPieces;
+
+  // Active color determination
+  const firstSelectedColorName = current.selectedColors[0] || (original.colors[0] && original.colors[0].name) || 'Standard';
+  const matchingColorObj = original.colors.find(c => c.name === firstSelectedColorName) || original.colors[0] || { hex: '#222', name: 'Standard' };
+  const displayColorHex = (current.customization && current.customization.color) ? current.customization.color : matchingColorObj.hex;
+  const displayColorName = (current.customization && current.customization.colorName) ? current.customization.colorName : matchingColorObj.name;
+
+  // Check if item has custom design from studio
+  const isCustomized = !!(current.customization && (current.customization.hasCustomDesign || current.customization.color));
+
+  // Determine logo details
+  let logoChipHtml = '';
+  let logoPlacementsSummary = BulkBuilderState.customizationOptions.join(', ');
+
+  if (current.customization?.artworks) {
+    const frontArts = current.customization.artworks.front || [];
+    const backArts = current.customization.artworks.back || [];
+    const allArts = [...frontArts, ...backArts];
+
+    if (allArts.length > 0) {
+      const primeArt = allArts[0];
+      const placements = [];
+      if (frontArts.length) placements.push('Front: ' + frontArts.map(a => a.placement || 'Center Front').join(', '));
+      if (backArts.length) placements.push('Back: ' + backArts.map(a => a.placement || 'Upper Back').join(', '));
+      logoPlacementsSummary = placements.join(' | ');
+
+      logoChipHtml = `
+        <div class="showcase-logo-chip">
+          <img src="${primeArt.src}" alt="${primeArt.name || 'Artwork'}">
+          <div>
+            <div style="font-weight: 700; color: var(--text-charcoal);">${primeArt.name || 'Custom Studio Artwork'}</div>
+            <div style="font-size: 0.74rem; color: var(--text-muted-grey);">${logoPlacementsSummary}</div>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  if (!logoChipHtml && BulkBuilderState.uploadedFiles.length > 0) {
+    const f = BulkBuilderState.uploadedFiles[0];
+    logoChipHtml = `
+      <div class="showcase-logo-chip">
+        ${f.previewUrl ? `<img src="${f.previewUrl}" alt="Logo">` : `<span style="font-size: 1.2rem;">📄</span>`}
         <div>
-          <span class="eyebrow" style="margin: 0;">Active Style Configuration</span>
-          <h3 style="font-size: 1.3rem; margin: 4px 0;">${current.name}</h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted-grey);">
-            Style Code: <strong>${current.code}</strong> &bull; Fabric: <strong>${current.fabric}</strong> &bull; Weight: <strong>${current.gsm} GSM</strong>
-          </p>
+          <div style="font-weight: 700; color: var(--text-charcoal);">${f.name}</div>
+          <div style="font-size: 0.74rem; color: var(--text-muted-grey);">Placement: ${logoPlacementsSummary}</div>
         </div>
-        <div style="text-align: right;">
-          <span class="tag tag-moq" style="font-size: 0.82rem; padding: 6px 12px;">Style MOQ: ${current.moq} pcs</span>
+      </div>
+    `;
+  }
+
+  // Build Size Distribution text
+  const sizeBreakdownText = Object.entries(sizeDistributionMap)
+    .filter(([_, cnt]) => cnt > 0)
+    .map(([sz, cnt]) => `${sz}:${cnt}`)
+    .join('  &bull;  ') || '0 configured';
+
+  // Garment silhouette ID for SVG
+  let garmentId = 'round-neck';
+  if (current.customization?.garmentId) {
+    garmentId = current.customization.garmentId;
+  } else if (current.id.includes('polo')) {
+    garmentId = 'polo';
+  } else if (current.id.includes('hoodie')) {
+    garmentId = 'hoodie';
+  } else if (current.id.includes('sport')) {
+    garmentId = 'sports';
+  } else if (current.id.includes('heavy')) {
+    garmentId = 'oversized';
+  }
+
+  // Current preview parameters
+  const activeView = current.activePreviewView || 'front';
+  const activeImgIndex = current.activePreviewImageIndex || 0;
+  const currentImgSrc = (original.images && original.images[activeImgIndex]) || (original.images && original.images[0]) || '';
+
+  // Render Full Section: Showcase Card + Step 2.1 Colours + Step 2.2 Matrix Table
+  container.innerHTML = `
+    <!-- ============================================== -->
+    <!-- ENTERPRISE ORDER ARCHITECTURE: PRODUCT SHOWCASE -->
+    <!-- ============================================== -->
+    <div class="product-showcase-card">
+      <div class="product-showcase-grid">
+        
+        <!-- Left: Large Product Preview Stage -->
+        <div class="showcase-stage-wrap" id="showcaseStageWrap">
+          
+          <!-- Main Interactive Image / SVG Stage -->
+          <div class="showcase-preview-frame" id="showcasePreviewFrame" title="Click to inspect high-resolution preview">
+            ${isCustomized ? `
+              <span class="showcase-custom-badge">Custom Studio Design</span>
+              <div class="showcase-svg-container">
+                ${typeof getGarmentSvgTemplate === 'function' ? getGarmentSvgTemplate(garmentId, activeView, displayColorHex) : `<img src="${currentImgSrc}" class="showcase-main-img" alt="${current.name}">`}
+                <div class="showcase-artwork-overlay">
+                  ${(current.customization?.artworks && current.customization.artworks[activeView]) ? current.customization.artworks[activeView].map(art => `
+                    <div class="showcase-placed-logo" style="left: ${art.x}%; top: ${art.y}%; width: ${Math.round((art.width || 100) * (art.scale || 1) * 0.65)}px; transform: translate(-50%, -50%) rotate(${art.rotation || 0}deg);">
+                      <img src="${art.src}" alt="${art.name || 'Artwork'}">
+                    </div>
+                  `).join('') : ''}
+                </div>
+              </div>
+            ` : `
+              <img src="${currentImgSrc}" alt="${current.name}" class="showcase-main-img" id="showcaseMainImg">
+            `}
+
+            <div class="showcase-zoom-hint">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <span>Click to Enlarge</span>
+            </div>
+          </div>
+
+          <!-- Thumbnails Switcher Row -->
+          <div class="showcase-thumb-row" id="showcaseThumbRow">
+            ${isCustomized ? `
+              <button type="button" class="showcase-thumb-btn ${activeView === 'front' ? 'is-active' : ''}" data-view="front" title="Front View">
+                <div style="font-size: 1.1rem; line-height: 1;">👕</div>
+                <span class="showcase-thumb-label">Front</span>
+              </button>
+              <button type="button" class="showcase-thumb-btn ${activeView === 'back' ? 'is-active' : ''}" data-view="back" title="Back View">
+                <div style="font-size: 1.1rem; line-height: 1;">🔄</div>
+                <span class="showcase-thumb-label">Back</span>
+              </button>
+            ` : (original.images || []).map((imgUrl, idx) => `
+              <button type="button" class="showcase-thumb-btn ${idx === activeImgIndex ? 'is-active' : ''}" data-img-index="${idx}" title="View Angle ${idx + 1}">
+                <img src="${imgUrl}" alt="${current.name} Angle ${idx + 1}">
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Uploaded Logo / Artwork Badge (if present) -->
+          ${logoChipHtml}
+
         </div>
+
+        <!-- Right: Comprehensive Product Specifications Pane -->
+        <div class="showcase-info-pane">
+          
+          <div class="showcase-header-row">
+            <div>
+              <span class="showcase-category-pill">${current.category} &bull; ${current.productType || 'Garment Model'}</span>
+              <h3 class="showcase-product-title">${current.name}</h3>
+              <div style="font-size: 0.82rem; color: var(--text-muted-grey); margin-top: 4px;">
+                Manufacturing Style Code: <strong style="font-family: var(--font-mono); color: var(--text-charcoal);">${current.code}</strong>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <span class="tag tag-moq" style="font-size: 0.85rem; padding: 6px 14px;">Style MOQ: ${current.moq} pcs</span>
+            </div>
+          </div>
+
+          <!-- Specifications Grid Table -->
+          <div class="showcase-spec-table">
+            <div class="showcase-spec-entry">
+              <span class="showcase-spec-label">Fabric Composition</span>
+              <span class="showcase-spec-val">${current.fabric}</span>
+            </div>
+
+            <div class="showcase-spec-entry">
+              <span class="showcase-spec-label">Fabric Weight</span>
+              <span class="showcase-spec-val">${current.gsm} GSM Standard</span>
+            </div>
+
+            <div class="showcase-spec-entry">
+              <span class="showcase-spec-label">Active Garment Colour</span>
+              <span class="showcase-spec-val">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background-color: ${displayColorHex}; border: 1px solid rgba(0,0,0,0.2);"></span>
+                <span>${displayColorName}</span>
+              </span>
+            </div>
+
+            <div class="showcase-spec-entry">
+              <span class="showcase-spec-label">Decoration Technique</span>
+              <span class="showcase-spec-val">${BulkBuilderState.printMethod}</span>
+            </div>
+
+            <div class="showcase-spec-entry" style="grid-column: span 2;">
+              <span class="showcase-spec-label">Logo / Graphic Placements</span>
+              <span class="showcase-spec-val">${logoPlacementsSummary}</span>
+            </div>
+          </div>
+
+          <!-- Size-Wise Distribution Summary -->
+          <div class="showcase-qty-summary-pill">
+            <div>
+              <span style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted-grey); display: block;">Active Size Distribution (S–3XL):</span>
+              <span style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600;">${sizeBreakdownText}</span>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted-grey); display: block;">MOQ Compliance:</span>
+              <span style="font-weight: 700; font-size: 0.92rem; color: ${isMoqMet ? 'var(--color-success)' : 'var(--color-error)'};">
+                ${currentTotalPieces} / ${current.moq} pcs (${isMoqMet ? '✓ Satisfied' : `⚠️ Needs ${diffMoq} pcs`})
+              </span>
+            </div>
+          </div>
+
+          <!-- Action Links Row -->
+          <div class="showcase-action-row">
+            <button type="button" class="btn btn-secondary btn-sm" id="showcaseLightboxTriggerBtn">
+              <span>🔍 Enlarge Product Image</span>
+            </button>
+            <a href="customization.html?product=${current.id}" class="btn btn-ghost btn-sm" style="font-size: 0.82rem;">
+              <span>✏️ Customize Artwork in Studio &rarr;</span>
+            </a>
+          </div>
+
+        </div>
+
       </div>
     </div>
 
@@ -344,6 +694,31 @@ function renderActiveProductConfiguration() {
     </div>
   `;
 
+  // Attach Lightbox triggers
+  document.getElementById('showcasePreviewFrame')?.addEventListener('click', () => {
+    openProductLightboxModal(current, original);
+  });
+  document.getElementById('showcaseLightboxTriggerBtn')?.addEventListener('click', () => {
+    openProductLightboxModal(current, original);
+  });
+
+  // Attach Thumbnail switcher listeners
+  container.querySelectorAll('.showcase-thumb-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.getAttribute('data-view');
+      const imgIdx = btn.getAttribute('data-img-index');
+
+      if (view) {
+        current.activePreviewView = view;
+      }
+      if (imgIdx !== null) {
+        current.activePreviewImageIndex = parseInt(imgIdx, 10);
+      }
+
+      renderActiveProductConfiguration();
+    });
+  });
+
   // Attach Color Card Click Handlers
   container.querySelectorAll('.colour-select-card').forEach(card => {
     card.addEventListener('click', () => {
@@ -362,9 +737,17 @@ function renderActiveProductConfiguration() {
         // Select
         current.selectedColors.push(colName);
         current.quantities[colName] = { S: 0, M: 25, L: 25, XL: 0, "2XL": 0, "3XL": 0 };
+
+        // Also update preview color to this newly selected swatch
+        const selColorObj = original.colors.find(c => c.name === colName);
+        if (selColorObj && current.customization) {
+          current.customization.color = selColorObj.hex;
+          current.customization.colorName = selColorObj.name;
+        }
       }
 
       persistState();
+      renderProductSelector();
       renderActiveProductConfiguration();
       updateLiveSummary();
     });
@@ -391,6 +774,101 @@ function renderActiveProductConfiguration() {
   calculateMatrixTotals(current);
 }
 
+/**
+ * Handle Lightbox Modal for Full Image Inspection
+ */
+function openProductLightboxModal(current, original) {
+  const modal = document.getElementById('productImageLightboxModal');
+  const body = document.getElementById('lightboxModalBody');
+  const title = document.getElementById('lightboxModalTitle');
+  const caption = document.getElementById('lightboxModalCaption');
+  if (!modal || !body) return;
+
+  const isCustomized = !!(current.customization && (current.customization.hasCustomDesign || current.customization.color));
+  const activeView = current.activePreviewView || 'front';
+
+  if (title) {
+    title.textContent = `${current.name} — ${isCustomized ? 'Custom Studio Specification' : 'Catalogue Image'}`;
+  }
+
+  if (isCustomized) {
+    let garmentId = current.customization.garmentId || 'round-neck';
+    if (!current.customization.garmentId) {
+      if (current.id.includes('polo')) garmentId = 'polo';
+      else if (current.id.includes('hoodie')) garmentId = 'hoodie';
+      else if (current.id.includes('sport')) garmentId = 'sports';
+      else if (current.id.includes('heavy')) garmentId = 'oversized';
+    }
+
+    const firstSelectedColorName = current.selectedColors[0] || (original.colors[0] && original.colors[0].name) || 'Standard';
+    const matchingColorObj = original.colors.find(c => c.name === firstSelectedColorName) || original.colors[0] || { hex: '#222' };
+    const fillColor = current.customization.color || matchingColorObj.hex;
+    const artworks = current.customization.artworks ? (current.customization.artworks[activeView] || []) : [];
+
+    body.innerHTML = `
+      <div class="lightbox-media-wrap">
+        <div class="showcase-svg-container" style="width: 92%; height: 95%;">
+          ${typeof getGarmentSvgTemplate === 'function' ? getGarmentSvgTemplate(garmentId, activeView, fillColor) : ''}
+          <div class="showcase-artwork-overlay">
+            ${artworks.map(art => `
+              <div class="showcase-placed-logo" style="left: ${art.x}%; top: ${art.y}%; width: ${Math.round((art.width || 100) * (art.scale || 1) * 0.95)}px; transform: translate(-50%, -50%) rotate(${art.rotation || 0}deg);">
+                <img src="${art.src}" alt="${art.name || 'Artwork'}">
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+
+    if (caption) {
+      caption.innerHTML = `Garment: <strong>${current.name}</strong> &bull; View: <strong>${activeView.toUpperCase()}</strong> &bull; Colour: <strong>${current.customization.colorName || fillColor}</strong> &bull; Fabric: <strong>${current.fabric} (${current.gsm} GSM)</strong>`;
+    }
+  } else {
+    const imgIndex = current.activePreviewImageIndex || 0;
+    const imgSrc = (original.images && original.images[imgIndex]) || (original.images && original.images[0]) || '';
+
+    body.innerHTML = `
+      <div class="lightbox-media-wrap">
+        <img src="${imgSrc}" class="lightbox-img-full" alt="${current.name}">
+      </div>
+    `;
+
+    if (caption) {
+      caption.innerHTML = `Style: <strong>${current.name}</strong> (${current.code}) &bull; Fabric: <strong>${current.fabric} (${current.gsm} GSM)</strong> &bull; Style MOQ: <strong>${current.moq} pcs</strong>`;
+    }
+  }
+
+  modal.classList.add('is-active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProductLightboxModal() {
+  const modal = document.getElementById('productImageLightboxModal');
+  if (modal) {
+    modal.classList.remove('is-active');
+    document.body.style.overflow = '';
+  }
+}
+
+function initLightboxModal() {
+  const modal = document.getElementById('productImageLightboxModal');
+  const closeBtn = document.getElementById('lightboxModalCloseBtn');
+  const actionCloseBtn = document.getElementById('lightboxCloseActionBtn');
+  const backdrop = document.getElementById('productImageLightboxBackdrop');
+
+  if (!modal) return;
+
+  [closeBtn, actionCloseBtn, backdrop].forEach(el => {
+    el?.addEventListener('click', closeProductLightboxModal);
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('is-active')) {
+      closeProductLightboxModal();
+    }
+  });
+}
+
 function handleMatrixInputChange(input) {
   const colName = input.getAttribute('data-color');
   const size = input.getAttribute('data-size');
@@ -409,7 +887,7 @@ function handleMatrixInputChange(input) {
   }
   current.quantities[colName][size] = val;
 
-  // Update row total
+  // Update row total in DOM
   const rowQtys = current.quantities[colName];
   const rowSum = Object.values(rowQtys).reduce((acc, n) => acc + (parseInt(n, 10) || 0), 0);
   const rowTotalEl = document.getElementById(`row-total-${encodeURIComponent(colName)}`);
@@ -419,6 +897,7 @@ function handleMatrixInputChange(input) {
 
   calculateMatrixTotals(current);
   persistState();
+  renderProductSelector(); // Updates strip quantity badges
   updateLiveSummary();
 }
 
@@ -429,6 +908,7 @@ function applyStandardSizeCurve(current) {
   });
 
   renderActiveProductConfiguration();
+  renderProductSelector();
   persistState();
   updateLiveSummary();
   showToast('Applied standard bulk size distribution (S:10, M:30, L:40, XL:15, 2XL:5)', 'info');
@@ -536,6 +1016,7 @@ function renderCustomizationOptions() {
       }
 
       renderCustomizationOptions();
+      renderActiveProductConfiguration();
       updateLiveSummary();
     });
   });
@@ -575,6 +1056,7 @@ function renderPrintMethods() {
       BulkBuilderState.printMethod = e.target.value;
       container.querySelectorAll('.print-method-card').forEach(c => c.classList.remove('checked'));
       e.target.closest('.print-method-card')?.classList.add('checked');
+      renderActiveProductConfiguration();
       updateLiveSummary();
     });
   });
@@ -646,6 +1128,7 @@ function initFileUploadZone() {
         reader.onload = (re) => {
           fileObj.previewUrl = re.target.result;
           renderFileList();
+          renderActiveProductConfiguration();
           updateLiveSummary();
         };
         reader.readAsDataURL(file);
@@ -657,6 +1140,7 @@ function initFileUploadZone() {
 
     if (addedCount > 0) {
       renderFileList();
+      renderActiveProductConfiguration();
       updateLiveSummary();
       showToast(`Uploaded ${addedCount} design file(s)`, 'success');
     }
@@ -692,10 +1176,14 @@ function initFileUploadZone() {
         const i = parseInt(btn.getAttribute('data-index'), 10);
         BulkBuilderState.uploadedFiles.splice(i, 1);
         renderFileList();
+        renderActiveProductConfiguration();
         updateLiveSummary();
       });
     });
   }
+
+  // Initial render of pre-loaded or transferred files
+  renderFileList();
 }
 
 /**
@@ -791,25 +1279,32 @@ function updateLiveSummary() {
       </div>
     </div>
 
-    <!-- Style by Style Breakdown Accordion -->
+    <!-- Style by Style Breakdown with Thumbnails -->
     <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
       <h5 style="font-family: var(--font-body); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">
         Volume Breakdown by Garment
       </h5>
       <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.82rem;">
-        ${breakdownRows.map(row => `
-          <div style="background-color: var(--bg-warm-ivory); padding: 10px 12px; border-radius: var(--radius-sm); border-left: 3px solid ${row.satisfies ? 'var(--color-success)' : 'var(--color-error)'};">
-            <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px;">
-              <span>${row.product.name}</span>
-              <span>${row.sum} / ${row.product.moq} MOQ</span>
-            </div>
-            ${row.colorDetails.length > 0 ? `
-              <div style="color: var(--text-muted-grey); font-size: 0.78rem; line-height: 1.4;">
-                ${row.colorDetails.join('<br>')}
+        ${breakdownRows.map(row => {
+          const orig = getProductById(row.product.id) || PRODUCTS_DATA[0];
+          const thumb = (orig.images && orig.images[0]) || '';
+          return `
+            <div style="background-color: var(--bg-warm-ivory); padding: 10px 12px; border-radius: var(--radius-sm); border-left: 3px solid ${row.satisfies ? 'var(--color-success)' : 'var(--color-error)'}; display: flex; gap: 10px; align-items: flex-start;">
+              <img src="${thumb}" alt="${row.product.name}" style="width: 40px; height: 40px; border-radius: 3px; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0;">
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px;">
+                  <span>${row.product.name}</span>
+                  <span>${row.sum} / ${row.product.moq} MOQ</span>
+                </div>
+                ${row.colorDetails.length > 0 ? `
+                  <div style="color: var(--text-muted-grey); font-size: 0.78rem; line-height: 1.4;">
+                    ${row.colorDetails.join('<br>')}
+                  </div>
+                ` : '<div style="color: var(--color-error); font-size: 0.75rem;">No quantities entered yet</div>'}
               </div>
-            ` : '<div style="color: var(--color-error); font-size: 0.75rem;">No quantities entered yet</div>'}
-          </div>
-        `).join('')}
+            </div>
+          `;
+        }).join('')}
       </div>
     </div>
 
@@ -953,12 +1448,14 @@ function initEnquiryForm() {
 
     // Clear enquiry cache
     localStorage.removeItem('vtc_bulk_enquiry');
-    updateHeaderEnquiryBadge();
+    if (typeof updateHeaderEnquiryBadge === 'function') {
+      updateHeaderEnquiryBadge();
+    }
   });
 }
 
 /**
- * Display Professional Confirmation Screen (Section 8)
+ * Display Professional Confirmation Screen (Section 8) with Ordered Product Images
  */
 function showSubmissionSuccessScreen(data) {
   const container = document.getElementById('bulkOrderBuilderApp');
@@ -980,10 +1477,33 @@ function showSubmissionSuccessScreen(data) {
         Notice: This is a frontend demo reference generated for prototype presentation. No live backend transmission occurred.
       </p>
 
-      <div style="background-color: var(--bg-warm-ivory); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 24px; text-align: left; max-width: 520px; margin: 0 auto 36px auto;">
+      <div style="background-color: var(--bg-warm-ivory); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 24px; text-align: left; max-width: 580px; margin: 0 auto 36px auto;">
         <h4 style="font-size: 0.95rem; font-family: var(--font-body); font-weight: 700; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.05em;">
           Enquiry Specification Summary
         </h4>
+
+        <!-- Ordered Products Mini Visual List -->
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+          ${BulkBuilderState.products.map(p => {
+            const orig = getProductById(p.id) || PRODUCTS_DATA[0];
+            const thumb = (orig.images && orig.images[0]) || '';
+            const pTotal = Object.values(p.quantities || {}).reduce((sum, row) => {
+              return sum + Object.values(row).reduce((s, n) => s + (parseInt(n, 10) || 0), 0);
+            }, 0);
+            const isCustom = !!(p.customization && (p.customization.hasCustomDesign || p.customization.color));
+            return `
+              <div style="display: flex; align-items: center; gap: 12px; background: #fff; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                <img src="${thumb}" alt="${p.name}" style="width: 48px; height: 48px; border-radius: 4px; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0;">
+                <div style="flex: 1;">
+                  <div style="font-weight: 700; font-size: 0.9rem;">${p.name} ${isCustom ? '<span style="font-size: 0.7rem; color: var(--accent-terracotta); font-weight: 700;">(Custom Design)</span>' : ''}</div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted-grey);">${p.fabric} &bull; ${p.gsm} GSM &bull; ${p.selectedColors.join(', ')}</div>
+                </div>
+                <div style="font-weight: 700; font-size: 0.92rem; color: var(--text-charcoal);">${pTotal} pcs</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
         <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem;">
           <div style="display: flex; justify-content: space-between;">
             <span style="color: var(--text-muted-grey);">Enquiry Reference:</span>

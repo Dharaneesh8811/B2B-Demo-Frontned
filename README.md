@@ -48,11 +48,16 @@ Built using **pure semantic HTML5, modern CSS3, and Vanilla JavaScript** (Zero e
    - Interactive Size Measurement Chart modal popup (Chest, Length, Shoulder, Sleeve across S–3XL).
    - Direct integration: "Add to Bulk Enquiry" and "Configure in Bulk Builder".
 
-5. **Customization & Print Guide (`customization.html`)**
-   - In-depth technical breakdown of 6 decoration lines: Screen Printing, DTG, DTF, Dye Sublimation, Heat Transfer/Silicone, and High-Density Embroidery.
-   - Technical decision comparison matrix table (Order volumes, hand feel, wash life, color accuracy).
-   - Standard garment placement zones guide (Left chest, Full front, Upper back, Sleeves).
-   - Pre-flight artwork vector guidelines (AI, PDF, SVG, 300 DPI PNG, Pantone PMS matching).
+5. **Interactive Customization Studio (`customization.html`)**
+   - **Full two-column interactive product configurator** with high-precision vector SVG mockups for 5 silhouettes: Round Neck T-Shirt, Polo T-Shirt, Oversized Streetwear Tee, Athletic Sports Jersey, and Heavyweight Fleece Hoodie.
+   - **Front & Back View Switcher:** Independent artwork coordinate layers for front and back orientations with live artwork count badges.
+   - **Real-Time Color Swatches:** Instantly updates garment fills across 7 production dye formulas (Black, White, Charcoal, Navy, Terracotta, Grey, Olive) + custom HTML5 color picker without reloading.
+   - **Multi-Logo Upload & Live Canvas Placement:** Drag-and-drop support for PNG (transparent), JPG, and SVG (up to 15MB) with client-side validation and starter sample graphics.
+   - **Direct On-Canvas Manipulation:** Pointer/touch drag-and-drop repositioning, corner scale handle (30%–250%), top rotation handle (-180° to 180°), quick-delete handle, and fine-tuning sliders.
+   - **Standard Placement Presets:** One-click snapping to Left Chest, Right Chest, Center Front, Full Front, Upper Back, Full Back, Left Sleeve, Right Sleeve.
+   - **Decoration Technique Selector:** Screen Printing, DTF, DTG, Dye Sublimation, Heat Transfer, Embroidery, and Blank apparel with explanations.
+   - **Live Design Summary & Seamless Bulk Transfer:** Summarizes all placements and transfers the configuration smoothly into `bulk-quote.html` with product, color, and technique pre-selected.
+   - **Technical Reference Guides (below the studio):** Decision comparison table, placement coordinate diagrams, and pre-flight artwork checklist.
 
 6. **Our Work / Portfolio (`portfolio.html`)**
    - Visual showcase of previous illustrative bulk production runs.

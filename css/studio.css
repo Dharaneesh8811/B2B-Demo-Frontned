@@ -1,0 +1,861 @@
+/* ==========================================================================
+   VANGUARD TEXTILE CO. — INTERACTIVE T-SHIRT CUSTOMIZATION STUDIO
+   Palette: Warm Ivory (#F5F1E9), Charcoal (#252820), Terracotta (#A66B4F)
+   ========================================================================== */
+
+/* Studio Master Layout */
+.studio-section {
+  padding: 32px 0 80px 0;
+  background-color: var(--bg-warm-ivory);
+}
+
+.studio-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* ==========================================================================
+   LEFT COLUMN: STAGE & MOCKUP CANVAS
+   ========================================================================== */
+
+.studio-stage-panel {
+  background-color: var(--bg-soft-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  position: sticky;
+  top: 96px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Stage Toolbar */
+.stage-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.stage-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.stage-garment-name {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-charcoal);
+  line-height: 1.2;
+}
+
+.stage-color-indicator {
+  font-size: 0.78rem;
+  color: var(--text-muted-grey);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.color-dot-inline {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  display: inline-block;
+}
+
+/* Segmented View Switcher (Front / Back) */
+.stage-view-switcher {
+  display: inline-flex;
+  background-color: var(--bg-muted-beige);
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  gap: 4px;
+}
+
+.view-btn {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-charcoal);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.view-btn.active {
+  background-color: var(--accent-terracotta);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(166, 107, 79, 0.28);
+}
+
+.view-badge-count {
+  background: rgba(0, 0, 0, 0.15);
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  font-size: 0.7rem;
+}
+
+.view-btn.active .view-badge-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+/* Zoom & Reset Controls */
+.stage-tools-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tool-icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-warm-ivory);
+  border: 1px solid var(--border-color);
+  color: var(--text-charcoal);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: all var(--transition-fast);
+}
+
+.tool-icon-btn:hover {
+  border-color: var(--accent-terracotta);
+  color: var(--accent-terracotta);
+}
+
+/* Interactive Canvas Frame */
+.stage-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.05;
+  background-color: var(--bg-warm-ivory);
+  background-image: 
+    radial-gradient(circle, rgba(119, 118, 111, 0.15) 1px, transparent 1px);
+  background-size: 20px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.stage-zoom-container {
+  position: relative;
+  width: 90%;
+  height: 94%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center center;
+}
+
+/* SVG Garment Mockup */
+.garment-svg-wrap {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 14px 28px rgba(37, 40, 32, 0.12));
+}
+
+.garment-svg-wrap svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: fill 0.3s ease;
+}
+
+/* Printable Zone Boundary Guide */
+.print-guide-boundary {
+  position: absolute;
+  top: 18%;
+  left: 27%;
+  width: 46%;
+  height: 60%;
+  border: 1px dashed rgba(166, 107, 79, 0.35);
+  border-radius: 4px;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.print-guide-boundary.hide {
+  opacity: 0;
+}
+
+.print-guide-tag {
+  position: absolute;
+  top: -18px;
+  left: 0;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-terracotta);
+  background: var(--bg-soft-white);
+  padding: 1px 6px;
+  border-radius: 2px;
+  border: 1px solid rgba(166, 107, 79, 0.3);
+}
+
+/* Artwork Layer Over Mockup */
+.artwork-canvas-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* Placed Artwork Elements */
+.canvas-logo-item {
+  position: absolute;
+  cursor: grab;
+  pointer-events: auto;
+  transform-origin: center center;
+  touch-action: none;
+  display: inline-block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.canvas-logo-item.is-dragging {
+  cursor: grabbing;
+}
+
+.canvas-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+/* Selected Logo Bounding Box & Handles */
+.canvas-logo-item.is-selected {
+  outline: 1.5px dashed var(--accent-terracotta);
+  outline-offset: 3px;
+}
+
+.logo-handle {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--accent-terracotta);
+  color: #FFFFFF;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.canvas-logo-item.is-selected .logo-handle {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Resize Handle (Bottom-Right) */
+.handle-resize {
+  bottom: -9px;
+  right: -9px;
+  cursor: nwse-resize;
+  font-size: 0.6rem;
+}
+
+/* Rotate Handle (Top-Center with stem) */
+.handle-rotate {
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: grab;
+  font-size: 0.65rem;
+}
+
+.handle-rotate::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 1px;
+  height: 10px;
+  background-color: var(--accent-terracotta);
+  transform: translateX(-50%);
+}
+
+/* Delete Quick Icon (Top-Right) */
+.handle-delete {
+  top: -9px;
+  right: -9px;
+  background-color: var(--color-error);
+  cursor: pointer;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+/* Stage Bottom Hint Bar */
+.stage-footer-bar {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-muted-grey);
+}
+
+.stage-helper-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ==========================================================================
+   RIGHT COLUMN: CUSTOMIZATION CONTROLS PANEL
+   ========================================================================== */
+
+.studio-controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.studio-card {
+  background-color: var(--bg-soft-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-subtle);
+  transition: border-color var(--transition-fast);
+}
+
+.studio-card:hover {
+  border-color: var(--border-dark);
+}
+
+.studio-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.studio-step-num {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-terracotta);
+  background: var(--accent-terracotta-subtle);
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  margin-right: 8px;
+}
+
+.studio-card-title {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-charcoal);
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+}
+
+/* A. Garment Selection Grid */
+.garment-select-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.garment-option-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 12px 10px;
+  background-color: var(--bg-warm-ivory);
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.garment-option-card:hover {
+  border-color: var(--text-charcoal);
+  transform: translateY(-2px);
+}
+
+.garment-option-card.active {
+  border-color: var(--accent-terracotta);
+  background-color: var(--accent-terracotta-subtle);
+  box-shadow: 0 0 0 1px var(--accent-terracotta);
+}
+
+.garment-option-icon {
+  font-size: 1.5rem;
+  margin-bottom: 2px;
+}
+
+.garment-option-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-charcoal);
+}
+
+.garment-option-moq {
+  font-size: 0.72rem;
+  color: var(--text-muted-grey);
+}
+
+/* B. Colour Swatches */
+.color-swatches-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.studio-color-swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-fast);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.studio-color-swatch:hover {
+  transform: scale(1.12);
+}
+
+.studio-color-swatch.active {
+  box-shadow: 0 0 0 2px var(--bg-soft-white), 0 0 0 4px var(--accent-terracotta);
+}
+
+.custom-color-picker-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+  padding: 4px 10px;
+  background: var(--bg-warm-ivory);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+.custom-color-picker-wrap input[type="color"] {
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.custom-color-label {
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  color: var(--text-charcoal);
+}
+
+/* D. Artwork Upload & Management */
+.studio-upload-dropzone {
+  border: 2px dashed var(--border-dark);
+  border-radius: var(--radius-sm);
+  padding: 24px 16px;
+  text-align: center;
+  background-color: var(--bg-warm-ivory);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-bottom: 14px;
+}
+
+.studio-upload-dropzone:hover,
+.studio-upload-dropzone.dragover {
+  border-color: var(--accent-terracotta);
+  background-color: var(--accent-terracotta-subtle);
+}
+
+.upload-icon {
+  font-size: 1.8rem;
+  color: var(--accent-terracotta);
+  margin-bottom: 6px;
+}
+
+.upload-headline {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.upload-subtext {
+  font-size: 0.78rem;
+  color: var(--text-muted-grey);
+}
+
+/* Upload Error Alert */
+.upload-error-banner {
+  padding: 10px 14px;
+  background-color: var(--color-error-bg);
+  border: 1px solid rgba(158, 55, 55, 0.3);
+  color: var(--color-error);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  margin-bottom: 14px;
+  display: none;
+}
+
+/* Starter Sample Graphics */
+.sample-graphics-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  font-size: 0.8rem;
+}
+
+.sample-graphic-btn {
+  background: var(--bg-warm-ivory);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.sample-graphic-btn:hover {
+  border-color: var(--accent-terracotta);
+  color: var(--accent-terracotta);
+}
+
+/* Active Artworks Layer List */
+.studio-artwork-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.artwork-row-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: var(--bg-warm-ivory);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.artwork-row-item:hover {
+  border-color: var(--text-charcoal);
+}
+
+.artwork-row-item.active {
+  border-color: var(--accent-terracotta);
+  background-color: var(--accent-terracotta-subtle);
+}
+
+.artwork-row-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.artwork-thumb {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.artwork-row-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.artwork-row-meta {
+  font-size: 0.7rem;
+  color: var(--text-muted-grey);
+}
+
+.artwork-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.artwork-delete-btn {
+  background: none;
+  border: none;
+  color: var(--color-error);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 4px;
+}
+
+/* E. Placement Presets Grid */
+.placement-presets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+  gap: 8px;
+}
+
+.placement-preset-btn {
+  background-color: var(--bg-warm-ivory);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 8px 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.placement-preset-btn:hover {
+  border-color: var(--accent-terracotta);
+  color: var(--accent-terracotta);
+}
+
+.placement-preset-btn.active {
+  background-color: var(--accent-terracotta);
+  color: #FFFFFF;
+  border-color: var(--accent-terracotta);
+}
+
+/* F. Active Logo Inspector & Fine-Tuning */
+.artwork-inspector {
+  background: var(--bg-warm-ivory);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-top: 14px;
+}
+
+.inspector-slider-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.inspector-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-charcoal);
+  min-width: 60px;
+}
+
+.inspector-slider {
+  flex: 1;
+  accent-color: var(--accent-terracotta);
+}
+
+.inspector-val {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-charcoal);
+  min-width: 42px;
+  text-align: right;
+}
+
+.inspector-quick-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* G. Printing Techniques Selector */
+.techniques-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.technique-item-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  background-color: var(--bg-warm-ivory);
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  transition: all var(--transition-fast);
+}
+
+.technique-item-card:hover {
+  border-color: var(--text-charcoal);
+}
+
+.technique-item-card.active {
+  border-color: var(--accent-terracotta);
+  background-color: var(--accent-terracotta-subtle);
+}
+
+.technique-item-card input[type="radio"] {
+  accent-color: var(--accent-terracotta);
+  margin-top: 3px;
+}
+
+.technique-text-wrap h5 {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.technique-text-wrap p {
+  font-size: 0.76rem;
+  color: var(--text-muted-grey);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* H. Live Design Summary & Transfer */
+.studio-summary-card {
+  background-color: var(--bg-soft-white);
+  border: 2px solid var(--accent-terracotta);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.summary-spec-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.86rem;
+}
+
+.summary-spec-item:last-of-type {
+  border-bottom: none;
+}
+
+.summary-spec-k {
+  color: var(--text-muted-grey);
+}
+
+.summary-spec-v {
+  font-weight: 700;
+  color: var(--text-charcoal);
+  text-align: right;
+}
+
+.continue-enquiry-btn {
+  width: 100%;
+  margin-top: 18px;
+  padding: 16px;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Responsive Breakpoints for Studio */
+@media (max-width: 1080px) {
+  .studio-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .studio-stage-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .studio-section {
+    padding: 20px 0 60px 0;
+  }
+
+  .stage-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stage-view-switcher {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .garment-select-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .placement-presets-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .inspector-slider-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .inspector-val {
+    text-align: left;
+  }
+}

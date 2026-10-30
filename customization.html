@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customization & Print Capabilities | Vanguard Textile Co.</title>
-  <meta name="description" content="Commercial apparel decoration guide: Screen printing, DTF transfers, high-density embroidery, all-over sublimation, and brand relabeling.">
+  <title>Interactive T-Shirt Customization Studio | Vanguard Textile Co.</title>
+  <meta name="description" content="Design your custom bulk apparel in real-time: swap garment models, test production colorways, upload logos, configure front and back print placements, and request bulk quotation.">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/studio.css">
 </head>
 <body>
 
@@ -56,7 +57,7 @@
       <li><a href="index.html" class="drawer-link">Home</a></li>
       <li><a href="about.html" class="drawer-link">About Us</a></li>
       <li><a href="collections.html" class="drawer-link">Collections & Catalog</a></li>
-      <li><a href="customization.html" class="drawer-link active">Customization Services</a></li>
+      <li><a href="customization.html" class="drawer-link active">Customization Studio</a></li>
       <li><a href="portfolio.html" class="drawer-link">Our Work / Portfolio</a></li>
       <li><a href="contact.html" class="drawer-link">Contact Us</a></li>
     </ul>
@@ -70,132 +71,236 @@
     <div class="container">
       <ul class="breadcrumb-list">
         <li class="breadcrumb-item"><a href="index.html">Home</a> &rsaquo;</li>
-        <li class="breadcrumb-item current">Customization & Printing Capabilities</li>
+        <li class="breadcrumb-item current">Interactive Customization Studio</li>
       </ul>
     </div>
   </div>
 
   <main>
 
-    <!-- Header Section -->
-    <section class="section section-tight">
+    <!-- Studio Header Intro -->
+    <section class="section section-tight" style="padding-bottom: 20px;">
       <div class="container">
-        <div style="max-width: 820px;">
-          <span class="eyebrow">Factory Decoration Studio</span>
-          <h1 style="margin-bottom: 20px;">Precision Apparel Embellishment & Branding</h1>
-          <p style="font-size: 1.15rem; line-height: 1.7; color: var(--text-charcoal); opacity: 0.9;">
-            We house six dedicated commercial print and embroidery lines. Each decoration technique is matched to optimal fabric compositions, order volumes, and performance environments to guarantee enduring visual impact.
+        <div style="max-width: 840px;">
+          <span class="eyebrow">Factory Design Lab & Real-Time Configurator</span>
+          <h1 style="margin-bottom: 14px; font-size: clamp(2.2rem, 3.8vw, 3.4rem);">
+            Interactive T-Shirt Customization Studio
+          </h1>
+          <p style="font-size: 1.08rem; line-height: 1.65; color: var(--text-charcoal); opacity: 0.9;">
+            Design your bulk apparel in real-time. Choose silhouette models, test production colorways, upload custom vector artwork, adjust front and back placements, and seamlessly transition into the bulk order quotation builder.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- Detailed 6 Printing Techniques Cards -->
-    <section class="section section-bg-white" style="padding-top: 0;">
+    <!-- ==========================================================================
+         MAIN INTERACTIVE 2-COLUMN DESIGN STUDIO
+         ========================================================================== -->
+    <section class="studio-section" id="customizationStudioApp">
       <div class="container">
-        
-        <div class="services-grid" style="margin-bottom: 64px;">
+        <div class="studio-grid">
           
-          <!-- 1. Screen Printing -->
-          <div class="service-card">
-            <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80" alt="Screen Printing Production" class="service-card-img">
-            <div class="service-card-body">
-              <span class="tag tag-moq" style="margin-bottom: 10px;">Best for 50+ Units</span>
-              <h3 class="service-card-title">01 &bull; Screen Printing</h3>
-              <p class="service-card-desc">
-                The gold standard for high-volume corporate merchandise and event apparel. Uses automated squeegee carousel presses pushing calibrated plastisol or soft-hand water-based discharge inks through high-mesh count screens.
-              </p>
-              <div class="service-card-meta">
-                <span>Hand-Feel: Soft-to-Medium</span>
-                <span>Durability: 60+ Washes</span>
+          <!-- LEFT COLUMN: T-SHIRT PREVIEW CANVAS STAGE -->
+          <div class="studio-stage-panel">
+            
+            <!-- Stage Top Toolbar -->
+            <div class="stage-toolbar">
+              <div class="stage-title-wrap">
+                <span class="stage-garment-name" id="stageGarmentName">Apex 220 GSM Combed Crewneck</span>
+                <span class="stage-color-indicator">
+                  <span class="color-dot-inline" id="stageColorDot" style="background-color: #1E1E1E;"></span>
+                  <span id="stageColorName">Pitch Black</span>
+                </span>
+              </div>
+
+              <!-- Segmented View Switcher: Front / Back -->
+              <div class="stage-view-switcher" role="tablist" aria-label="Garment View Selection">
+                <button type="button" class="view-btn active" data-view="front" onclick="switchView('front')">
+                  <span>👕 Front View</span>
+                  <span class="view-badge-count" id="countBadge-front">0</span>
+                </button>
+                <button type="button" class="view-btn" data-view="back" onclick="switchView('back')">
+                  <span>🔄 Back View</span>
+                  <span class="view-badge-count" id="countBadge-back">0</span>
+                </button>
+              </div>
+
+              <!-- Stage Utility Controls -->
+              <div class="stage-tools-group">
+                <button type="button" class="tool-icon-btn" id="stageZoomInBtn" title="Zoom In (+)" aria-label="Zoom in">+</button>
+                <button type="button" class="tool-icon-btn" id="stageZoomOutBtn" title="Zoom Out (-)" aria-label="Zoom out">&minus;</button>
+                <button type="button" class="tool-icon-btn" id="stageZoomResetBtn" title="Reset Zoom (100%)" style="font-size: 0.75rem;">1:1</button>
+                <button type="button" class="tool-icon-btn" id="togglePrintGuideBtn" title="Toggle Print Area Guide">📐</button>
+                <button type="button" class="tool-icon-btn" id="clearStudioArtworksBtn" title="Clear Artworks" style="color: var(--color-error);">&empty;</button>
               </div>
             </div>
+
+            <!-- Stage Interactive Viewport Container -->
+            <div class="stage-viewport" id="studioStageContainer">
+              <div class="stage-zoom-container" id="studioZoomContainer">
+                
+                <!-- Dynamic SVG Garment Mockup Layer -->
+                <div class="garment-svg-wrap" id="garmentSvgContainer">
+                  <!-- Injected dynamically by studio.js -->
+                </div>
+
+                <!-- Printable Area Boundary Box Guideline -->
+                <div class="print-guide-boundary" id="printGuideBoundary">
+                  <span class="print-guide-tag">Printable Zone</span>
+                </div>
+
+                <!-- Placed Artwork Overlay Layer (Drag, Resize, Rotate) -->
+                <div class="artwork-canvas-layer" id="studioArtworkLayer">
+                  <!-- Placed artworks rendered dynamically -->
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Stage Bottom Footer Bar -->
+            <div class="stage-footer-bar">
+              <div class="stage-helper-text">
+                <span>💡</span>
+                <span>Click artwork to select, drag to reposition, or use placement presets on the right.</span>
+              </div>
+              <span class="tag tag-moq" id="stageViewIndicatorTag">Active View: Front</span>
+            </div>
+
           </div>
 
-          <!-- 2. DTG Printing -->
-          <div class="service-card">
-            <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80" alt="DTG Digital Printing" class="service-card-img">
-            <div class="service-card-body">
-              <span class="tag tag-moq" style="margin-bottom: 10px;">Photographic & Low MOQ</span>
-              <h3 class="service-card-title">02 &bull; Direct-to-Garment (DTG)</h3>
-              <p class="service-card-desc">
-                High-resolution digital inkjet heads spray water-based pigments directly into 100% combed cotton fibers. Ideal for complex multi-tonal photographic illustrations, color gradients, and limited edition art runs.
-              </p>
-              <div class="service-card-meta">
-                <span>Hand-Feel: Ultra Breathable</span>
-                <span>Resolution: Up to 1200 DPI</span>
-              </div>
-            </div>
-          </div>
+          <!-- RIGHT COLUMN: CUSTOMIZATION CONTROLS PANEL -->
+          <div class="studio-controls-panel">
 
-          <!-- 3. DTF Printing -->
-          <div class="service-card">
-            <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=800&q=80" alt="DTF Film Heat Transfers" class="service-card-img">
-            <div class="service-card-body">
-              <span class="tag tag-moq" style="margin-bottom: 10px;">All Fabric Compatible</span>
-              <h3 class="service-card-title">03 &bull; Direct-to-Film (DTF)</h3>
-              <p class="service-card-desc">
-                Digitally printed onto specialized PET film, backed with hot-melt polyurethane adhesive powder, and thermally cured. Yields razor-sharp micro-details, ultra-vibrant colors, and exceptional stretch memory.
+            <!-- A. Garment Selection Card -->
+            <div class="studio-card">
+              <div class="studio-card-header">
+                <h3 class="studio-card-title">
+                  <span class="studio-step-num">01</span>
+                  <span>Select Garment Silhouette</span>
+                </h3>
+                <span style="font-size: 0.78rem; color: var(--text-muted-grey);">5 Base Models</span>
+              </div>
+              <p style="font-size: 0.84rem; color: var(--text-muted-grey); margin-bottom: 12px;">
+                Choose the foundation garment for your commercial order. All models feature certified fabric specifications.
               </p>
-              <div class="service-card-meta">
-                <span>Hand-Feel: Smooth Film</span>
-                <span>Elasticity: High Stretch</span>
+              <div class="garment-select-grid" id="garmentSelectionGrid">
+                <!-- Injected dynamically by studio.js -->
               </div>
             </div>
-          </div>
 
-          <!-- 4. Sublimation -->
-          <div class="service-card">
-            <img src="https://images.unsplash.com/photo-1578768079052-aa76e520028b?auto=format&fit=crop&w=800&q=80" alt="Dye Sublimation" class="service-card-img">
-            <div class="service-card-body">
-              <span class="tag tag-moq" style="margin-bottom: 10px;">100% AeroDry Polyester</span>
-              <h3 class="service-card-title">04 &bull; Dye Sublimation</h3>
-              <p class="service-card-desc">
-                Under high temperature and pressure, sublimation inks transition from solid to gas, bonding molecularly with synthetic polyester filaments. Unbeatable for all-over marathon jerseys and team kits.
+            <!-- B. Production Color Selection Card -->
+            <div class="studio-card">
+              <div class="studio-card-header">
+                <h3 class="studio-card-title">
+                  <span class="studio-step-num">02</span>
+                  <span>Production Colorway</span>
+                </h3>
+                <span style="font-size: 0.78rem; color: var(--text-muted-grey);">Azo-Free Reactive Dyes</span>
+              </div>
+              <p style="font-size: 0.84rem; color: var(--text-muted-grey); margin-bottom: 12px;">
+                Select from our primary batch dye formulas, or pick a custom Pantone shade with the color picker:
               </p>
-              <div class="service-card-meta">
-                <span>Hand-Feel: Zero Ink Weight</span>
-                <span>Permanence: Never Fades/Cracks</span>
+              <div class="color-swatches-grid" id="colorSwatchesContainer">
+                <!-- Injected dynamically by studio.js -->
               </div>
             </div>
-          </div>
 
-          <!-- 5. Heat Transfer -->
-          <div class="service-card">
-            <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=800&q=80" alt="Heat Transfer Vinyl & Silicone" class="service-card-img">
-            <div class="service-card-body">
-              <span class="tag tag-moq" style="margin-bottom: 10px;">Specialty Finishes</span>
-              <h3 class="service-card-title">05 &bull; Heat Transfer & Silicone</h3>
-              <p class="service-card-desc">
-                Engineered for metallic foils, high-visibility reflective workwear strips, and raised 3D silicone chest badges. Adds distinctive tactile dimensions to executive apparel and safety uniforms.
-              </p>
-              <div class="service-card-meta">
-                <span>Finish: Metallic / Reflective / Matte</span>
-                <span>Best on: Uniforms & Jackets</span>
+            <!-- C. Logo Upload & Artwork Management -->
+            <div class="studio-card">
+              <div class="studio-card-header">
+                <h3 class="studio-card-title">
+                  <span class="studio-step-num">03</span>
+                  <span>Upload & Manage Artworks</span>
+                </h3>
+                <span class="tag tag-terracotta" style="font-size: 0.7rem;">Vector & High-Res PNG</span>
               </div>
-            </div>
-          </div>
 
-          <!-- 6. Embroidery -->
-          <div class="service-card">
-            <img src="https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?auto=format&fit=crop&w=800&q=80" alt="High Density Embroidery" class="service-card-img">
-            <div class="service-card-body">
-              <span class="tag tag-moq" style="margin-bottom: 10px;">Polos, Hoodies & Jackets</span>
-              <h3 class="service-card-title">06 &bull; High-Density Embroidery</h3>
-              <p class="service-card-desc">
-                High-speed Tajima multi-head industrial embroidery machines driving colorfast German polyester thread. Available with 3D foam underlay puff for dimensional chest crests and executive sleeve monograms.
+              <!-- Upload Drag-and-Drop Area -->
+              <div class="studio-upload-dropzone" id="studioUploadDropzone">
+                <input type="file" id="studioFileInput" multiple accept=".png,.jpg,.jpeg,.svg" style="display: none;">
+                <div class="upload-icon">📁</div>
+                <div class="upload-headline">Click to Browse or Drag Logo Files Here</div>
+                <div class="upload-subtext">Supports transparent PNG, SVG, JPG (Max 15MB)</div>
+              </div>
+
+              <!-- Error Alert Banner -->
+              <div class="upload-error-banner" id="studioUploadError"></div>
+
+              <!-- Quick Starter Sample Graphics -->
+              <div style="margin-bottom: 6px;">
+                <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted-grey); text-transform: uppercase; letter-spacing: 0.05em;">
+                  Or Try Sample Studio Logos:
+                </span>
+              </div>
+              <div class="sample-graphics-row" id="starterGraphicsRow">
+                <!-- Injected dynamically by studio.js -->
+              </div>
+
+              <!-- Placed Artwork Layers List -->
+              <div style="margin-top: 14px;">
+                <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">
+                  Active Artworks on Current View:
+                </span>
+                <div class="studio-artwork-list" id="artworkLayersList">
+                  <!-- Injected dynamically by studio.js -->
+                </div>
+              </div>
+
+              <!-- Fine-Tuning Inspector for Active Logo -->
+              <div class="artwork-inspector" id="activeArtworkInspector" style="display: none;">
+                <!-- Sliders injected dynamically by studio.js -->
+              </div>
+
+            </div>
+
+            <!-- D. Placement Presets Card -->
+            <div class="studio-card">
+              <div class="studio-card-header">
+                <h3 class="studio-card-title">
+                  <span class="studio-step-num">04</span>
+                  <span>Standard Placement Presets</span>
+                </h3>
+                <span style="font-size: 0.78rem; color: var(--text-muted-grey);">Laser-Calibrated</span>
+              </div>
+              <p style="font-size: 0.84rem; color: var(--text-muted-grey); margin-bottom: 12px;">
+                Click any zone below to instantly snap your selected logo into standard industrial alignment:
               </p>
-              <div class="service-card-meta">
-                <span>Hand-Feel: Textured Relief</span>
-                <span>Longevity: Lifetime of Garment</span>
+              <div class="placement-presets-grid" id="placementPresetsContainer">
+                <!-- Injected dynamically by studio.js -->
               </div>
             </div>
+
+            <!-- E. Printing & Customization Technique Card -->
+            <div class="studio-card">
+              <div class="studio-card-header">
+                <h3 class="studio-card-title">
+                  <span class="studio-step-num">05</span>
+                  <span>Print & Embellishment Method</span>
+                </h3>
+                <span style="font-size: 0.78rem; color: var(--text-muted-grey);">Factory Floor Line</span>
+              </div>
+              <p style="font-size: 0.84rem; color: var(--text-muted-grey); margin-bottom: 12px;">
+                Choose the technical printing or embroidery execution for this custom garment style:
+              </p>
+              <div class="techniques-list" id="printingTechniqueSelector">
+                <!-- Injected dynamically by studio.js -->
+              </div>
+            </div>
+
+            <!-- F. Live Customization Summary & Transfer Button -->
+            <div class="studio-summary-card" id="studioLiveSummaryCard">
+              <!-- Injected dynamically by studio.js -->
+            </div>
+
           </div>
 
         </div>
-
       </div>
     </section>
+
+    <!-- ==========================================================================
+         TECHNICAL CUSTOMIZATION COMPARISON & SPECIFICATIONS (BELOW STUDIO)
+         ========================================================================== -->
 
     <!-- Customization Comparison Matrix Table -->
     <section class="section section-bg-beige">
@@ -279,7 +384,7 @@
     <section class="section section-bg-white">
       <div class="container">
         <div class="section-header">
-          <span class="eyebrow">Standard Placement Zones</span>
+          <span class="eyebrow">Standard Placement Coordinates</span>
           <h2>Print & Embroidery Placement Guide</h2>
           <p class="section-subtitle">
             Our laser-aligned platen systems adhere to strict industrial placement coordinates.
@@ -291,7 +396,7 @@
             <span class="eyebrow">Zone A</span>
             <h4>Left Chest Crest</h4>
             <p style="font-size: 0.85rem; color: var(--text-muted-grey); margin: 8px 0 14px 0;">
-              Standard: 3.5" to 4.2" width. Positioned 3" below the collar seam. Ideal for corporate logos and embroidered monograms.
+              Standard: 3.5" to 4.2" width. Positioned 3" below collar seam. Ideal for corporate logos and embroidered monograms.
             </p>
             <span class="tag tag-terracotta">Screen &bull; Embroidery</span>
           </div>
@@ -300,7 +405,7 @@
             <span class="eyebrow">Zone B</span>
             <h4>Full Front Center</h4>
             <p style="font-size: 0.85rem; color: var(--text-muted-grey); margin: 8px 0 14px 0;">
-              Standard: 10" to 12" width x 14" height. Centered across chest. Ideal for campus festivals and high-impact brand statements.
+              Standard: 10" to 12" width x 14" height. Centered across chest. Ideal for campus festivals and brand statements.
             </p>
             <span class="tag tag-terracotta">Screen &bull; DTF &bull; DTG</span>
           </div>
@@ -309,7 +414,7 @@
             <span class="eyebrow">Zone C</span>
             <h4>Upper Shoulder Back</h4>
             <p style="font-size: 0.85rem; color: var(--text-muted-grey); margin: 8px 0 14px 0;">
-              Standard: 11" to 14" width. Positioned across the upper scapula. Ideal for conference staff identifiers and event itineraries.
+              Standard: 11" to 14" width. Positioned across the upper scapula. Ideal for conference staff identifiers and slogans.
             </p>
             <span class="tag tag-terracotta">Screen &bull; DTF &bull; Puff</span>
           </div>
@@ -318,7 +423,7 @@
             <span class="eyebrow">Zone D</span>
             <h4>Left / Right Sleeve</h4>
             <p style="font-size: 0.85rem; color: var(--text-muted-grey); margin: 8px 0 14px 0;">
-              Standard: 3" to 3.5" width. Centered on outer bicep hem. Ideal for secondary partner logos, flags, and year stamps.
+              Standard: 3" to 3.5" width. Centered on outer bicep hem. Ideal for secondary partner logos and badges.
             </p>
             <span class="tag tag-terracotta">Screen &bull; Embroidery</span>
           </div>
@@ -359,15 +464,15 @@
       </div>
     </section>
 
-    <!-- CTA -->
+    <!-- Bottom CTA -->
     <section class="section-tight">
       <div class="container">
         <div class="cta-banner">
-          <h2>Configure Your Custom Print Run in the Smart Builder</h2>
+          <h2>Ready to Take Your Customization to Bulk Production?</h2>
           <p>
-            Select your preferred decoration method, upload vector artwork, and calculate size matrices with live validation.
+            Submit your configured garment and size breakdown in our Smart Bulk Builder for an immediate commercial quotation within 2 to 4 hours.
           </p>
-          <a href="bulk-quote.html" class="btn btn-primary btn-lg">Launch Smart Bulk Builder &rarr;</a>
+          <a href="bulk-quote.html" class="btn btn-primary btn-lg">Launch Smart Bulk Order Builder &rarr;</a>
         </div>
       </div>
     </section>
@@ -395,7 +500,7 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About Our Mill</a></li>
             <li><a href="collections.html">Garment Catalogue</a></li>
-            <li><a href="customization.html">Customization & Printing</a></li>
+            <li><a href="customization.html">Customization Studio</a></li>
             <li><a href="portfolio.html">Client Portfolio</a></li>
             <li><a href="contact.html">Contact Us</a></li>
             <li><a href="bulk-quote.html">Smart Bulk Builder</a></li>
@@ -464,7 +569,10 @@
     </div>
   </div>
 
+  <!-- Scripts -->
   <script src="js/products.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/garment-svg.js"></script>
+  <script src="js/studio.js"></script>
 </body>
 </html>
