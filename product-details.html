@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Garment Specifications & Details | Vanguard Textile Co.</title>
+  <meta name="description" content="Technical fabric specifications, available bulk size breakdown, printing suitability, and commercial minimums.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo" aria-label="Vanguard Textile Co. Home">
+        <span class="brand-mark">V</span>
+        <span>VANGUARD <span style="font-weight: 300; font-size: 1.15rem; color: var(--accent-terracotta);">TEXTILE CO.</span></span>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="about.html" class="nav-link">About Us</a></li>
+          <li><a href="collections.html" class="nav-link active">Collections</a></li>
+          <li><a href="customization.html" class="nav-link">Customization</a></li>
+          <li><a href="portfolio.html" class="nav-link">Our Work</a></li>
+          <li><a href="contact.html" class="nav-link">Contact Us</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="bulk-quote.html" class="enquiry-counter-badge" title="View active bulk builder items">
+          <span>Enquiry</span>
+          <span class="badge-count" style="display: none;">0</span>
+        </a>
+        <a href="bulk-quote.html" class="btn btn-primary">Request Bulk Quote</a>
+        <button class="mobile-toggle" aria-label="Open mobile menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-nav-overlay"></div>
+  <aside class="mobile-nav-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <div class="brand-logo" style="font-size: 1.15rem;">
+        <span class="brand-mark">V</span>
+        <span>VANGUARD TEXTILE</span>
+      </div>
+      <button class="drawer-close" aria-label="Close mobile menu">&times;</button>
+    </div>
+    <ul class="drawer-links">
+      <li><a href="index.html" class="drawer-link">Home</a></li>
+      <li><a href="about.html" class="drawer-link">About Us</a></li>
+      <li><a href="collections.html" class="drawer-link active">Collections & Catalog</a></li>
+      <li><a href="customization.html" class="drawer-link">Customization Services</a></li>
+      <li><a href="portfolio.html" class="drawer-link">Our Work / Portfolio</a></li>
+      <li><a href="contact.html" class="drawer-link">Contact Us</a></li>
+    </ul>
+    <div class="drawer-footer">
+      <a href="bulk-quote.html" class="btn btn-primary" style="width: 100%;">Request Bulk Quote</a>
+    </div>
+  </aside>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-bar">
+    <div class="container">
+      <ul class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="index.html">Home</a> &rsaquo;</li>
+        <li class="breadcrumb-item"><a href="collections.html">Collections</a> &rsaquo;</li>
+        <li class="breadcrumb-item" id="crumbCategory">Category</li>
+        <li class="breadcrumb-item current" id="crumbProductName">Style</li>
+      </ul>
+    </div>
+  </div>
+
+  <main>
+    <section class="section">
+      <div class="container" id="productDetailContainer">
+        <!-- Dynamically populated by product-details.js -->
+        <div style="text-align: center; padding: 48px;">
+          <p>Loading apparel specifications...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Size Measurement Chart Modal -->
+  <div class="modal-overlay" id="sizeGuideModal" role="dialog" aria-modal="true" aria-labelledby="sizeGuideModalTitle">
+    <div class="modal-dialog" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 id="sizeGuideModalTitle" style="font-size: 1.25rem;">Garment Fit & Dimensional Measurement Chart</h3>
+        <button class="modal-close-btn" id="closeSizeGuideBtn" aria-label="Close size guide">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.88rem; color: var(--text-muted-grey); margin-bottom: 20px;">
+          All measurements represent finished garment dimensions laid flat in inches (tolerance &plusmn; 0.5 in). Pre-shrunk yarn ensures stability across repeated commercial laundry.
+        </p>
+
+        <div class="table-responsive">
+          <table class="table-spec">
+            <thead>
+              <tr>
+                <th>Size Label</th>
+                <th>Chest Width (in)</th>
+                <th>Body Length (in)</th>
+                <th>Shoulder (in)</th>
+                <th>Sleeve Length (in)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>S (Small)</strong></td>
+                <td>38"</td>
+                <td>27.5"</td>
+                <td>17.5"</td>
+                <td>8.0"</td>
+              </tr>
+              <tr>
+                <td><strong>M (Medium)</strong></td>
+                <td>40"</td>
+                <td>28.5"</td>
+                <td>18.5"</td>
+                <td>8.5"</td>
+              </tr>
+              <tr>
+                <td><strong>L (Large)</strong></td>
+                <td>42"</td>
+                <td>29.5"</td>
+                <td>19.5"</td>
+                <td>9.0"</td>
+              </tr>
+              <tr>
+                <td><strong>XL (Extra Large)</strong></td>
+                <td>44"</td>
+                <td>30.5"</td>
+                <td>20.5"</td>
+                <td>9.5"</td>
+              </tr>
+              <tr>
+                <td><strong>2XL (Double Extra)</strong></td>
+                <td>46"</td>
+                <td>31.5"</td>
+                <td>21.5"</td>
+                <td>10.0"</td>
+              </tr>
+              <tr>
+                <td><strong>3XL (Triple Extra)</strong></td>
+                <td>48"</td>
+                <td>32.5"</td>
+                <td>22.5"</td>
+                <td>10.5"</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="notice-box" style="margin-top: 24px; padding: 12px 16px;">
+          <p style="font-size: 0.8rem; margin: 0;">
+            <strong>Need custom fit patterns?</strong> For bespoke orders over 500 units, we accommodate custom sizing grading schedules and extended sizing up to 5XL upon request.
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('sizeGuideModal').classList.remove('is-active'); document.body.style.overflow=''">Close Chart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reusable Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <div class="brand-logo" style="color: #FFFFFF;">
+            <span class="brand-mark">V</span>
+            <span>VANGUARD <span style="font-weight: 300; font-size: 1.1rem; color: var(--accent-terracotta);">TEXTILE CO.</span></span>
+          </div>
+          <p>
+            Dedicated B2B manufacturer of custom bulk T-shirts, premium polos, and institutional workwear. Direct wholesale supply with tailored size matrices and precision print decoration.
+          </p>
+          <span class="demo-disclaimer-pill">Corporate Frontend Demonstration</span>
+        </div>
+
+        <div>
+          <h4>Navigation</h4>
+          <ul class="footer-links-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Our Mill</a></li>
+            <li><a href="collections.html">Garment Catalogue</a></li>
+            <li><a href="customization.html">Customization & Printing</a></li>
+            <li><a href="portfolio.html">Client Portfolio</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="bulk-quote.html">Smart Bulk Builder</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Collections</h4>
+          <ul class="footer-links-list">
+            <li><a href="collections.html?category=Round Neck">Round Neck T-Shirts</a></li>
+            <li><a href="collections.html?category=Polo">Pique Polo Shirts</a></li>
+            <li><a href="collections.html?category=Oversized">Oversized Streetwear</a></li>
+            <li><a href="collections.html?category=Sports / Jerseys">AeroDry Sports Jerseys</a></li>
+            <li><a href="collections.html?category=Hoodies">Heavyweight Hoodies</a></li>
+            <li><a href="collections.html?category=Corporate Uniforms">WorkTech Uniforms</a></li>
+            <li><a href="collections.html?category=Promotional T-Shirts">Campaign Promotional</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Manufacturing HQ</h4>
+          <div class="footer-contact-details">
+            <div class="contact-detail-item">
+              <span>📍</span>
+              <span>Industrial Apparel Zone, Sector 4, Textile Corridor, Mumbai &bull; 400013 [Placeholder]</span>
+            </div>
+            <div class="contact-detail-item">
+              <span>✉️</span>
+              <span>b2b-orders@vanguardtextiles.demo [Demo Placeholder]</span>
+            </div>
+            <div class="contact-detail-item">
+              <span>📞</span>
+              <span>+91 (022) 5550-B2B-QUOTE [Demo Placeholder]</span>
+            </div>
+            <div class="contact-detail-item">
+              <span>🕒</span>
+              <span>Mon – Sat: 09:00 to 19:00 IST</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 Vanguard Textile Co. All rights reserved. B2B Wholesale Platform.</div>
+        <div class="footer-legal-links">
+          <a href="#" data-policy="privacy">Privacy Policy</a>
+          <a href="#" data-policy="terms">Terms & Conditions</a>
+          <a href="#" data-policy="refund">Refund / Cancellation Policy</a>
+          <a href="#" data-policy="shipping">Shipping & Delivery Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Policy Modal Container -->
+  <div class="modal-overlay" id="policyModalOverlay" role="dialog" aria-modal="true" aria-labelledby="policyModalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="policyModalTitle" style="font-size: 1.3rem;">Company Policy</h3>
+        <button class="modal-close-btn" id="policyModalClose" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body" id="policyModalBody" style="line-height: 1.7; font-size: 0.92rem;"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('policyModalOverlay').classList.remove('is-active'); document.body.style.overflow=''">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/products.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/product-details.js"></script>
+</body>
+</html>

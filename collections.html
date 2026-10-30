@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Garment Collections & Product Catalogue | Vanguard Textile Co.</title>
+  <meta name="description" content="Browse our commercial bulk apparel catalog: round neck tees, pique polos, oversized streetwear, sports jerseys, hoodies, and corporate uniforms.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo" aria-label="Vanguard Textile Co. Home">
+        <span class="brand-mark">V</span>
+        <span>VANGUARD <span style="font-weight: 300; font-size: 1.15rem; color: var(--accent-terracotta);">TEXTILE CO.</span></span>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="about.html" class="nav-link">About Us</a></li>
+          <li><a href="collections.html" class="nav-link active">Collections</a></li>
+          <li><a href="customization.html" class="nav-link">Customization</a></li>
+          <li><a href="portfolio.html" class="nav-link">Our Work</a></li>
+          <li><a href="contact.html" class="nav-link">Contact Us</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="bulk-quote.html" class="enquiry-counter-badge" title="View active bulk builder items">
+          <span>Enquiry</span>
+          <span class="badge-count" style="display: none;">0</span>
+        </a>
+        <a href="bulk-quote.html" class="btn btn-primary">Request Bulk Quote</a>
+        <button class="mobile-toggle" aria-label="Open mobile menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-nav-overlay"></div>
+  <aside class="mobile-nav-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <div class="brand-logo" style="font-size: 1.15rem;">
+        <span class="brand-mark">V</span>
+        <span>VANGUARD TEXTILE</span>
+      </div>
+      <button class="drawer-close" aria-label="Close mobile menu">&times;</button>
+    </div>
+    <ul class="drawer-links">
+      <li><a href="index.html" class="drawer-link">Home</a></li>
+      <li><a href="about.html" class="drawer-link">About Us</a></li>
+      <li><a href="collections.html" class="drawer-link active">Collections & Catalog</a></li>
+      <li><a href="customization.html" class="drawer-link">Customization Services</a></li>
+      <li><a href="portfolio.html" class="drawer-link">Our Work / Portfolio</a></li>
+      <li><a href="contact.html" class="drawer-link">Contact Us</a></li>
+    </ul>
+    <div class="drawer-footer">
+      <a href="bulk-quote.html" class="btn btn-primary" style="width: 100%;">Request Bulk Quote</a>
+    </div>
+  </aside>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-bar">
+    <div class="container">
+      <ul class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="index.html">Home</a> &rsaquo;</li>
+        <li class="breadcrumb-item current">Bulk Apparel Catalogue</li>
+      </ul>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- Catalogue Header -->
+    <section class="section section-tight" style="padding-bottom: 24px;">
+      <div class="container">
+        <div style="max-width: 800px;">
+          <span class="eyebrow">Manufacturing Catalogue</span>
+          <h1 style="margin-bottom: 14px;">Commercial Bulk Garment Styles</h1>
+          <p style="font-size: 1.08rem; color: var(--text-muted-grey); line-height: 1.6;">
+            Select from our foundational certified blanks. All models are available for custom screen printing, direct-to-film transfers, and high-density embroidery with tailored size curves.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catalogue Main Layout (Sidebar Filters + Grid) -->
+    <section class="section section-tight" style="padding-top: 0;">
+      <div class="container">
+        
+        <!-- B2B Wholesale Notice Banner -->
+        <div class="notice-box" style="margin-bottom: 32px;">
+          <p>
+            <strong>Wholesale B2B Catalog:</strong> Unit pricing is customized per order based on total volume, print techniques, and size curve. <strong>No retail single-item sales.</strong> Click "Add to Bulk" or "Configure" to assemble your enquiry.
+          </p>
+        </div>
+
+        <div class="catalogue-layout">
+          
+          <!-- Filters Sidebar -->
+          <aside class="filter-sidebar">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
+              <h3 style="font-size: 1.1rem;">Filters</h3>
+              <button type="button" id="resetFiltersBtn" class="btn btn-ghost btn-sm" style="font-size: 0.78rem; color: var(--accent-terracotta);">Reset All</button>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="filter-group">
+              <h4 class="filter-title">Garment Category</h4>
+              <ul class="filter-list">
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterCategory" value="all" checked> All Categories</span>
+                    <span class="filter-count">10</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterCategory" value="Round Neck"> Round Neck T-Shirts</span>
+                    <span class="filter-count">2</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterCategory" value="Polo"> Polo T-Shirts</span>
+                    <span class="filter-count">2</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterCategory" value="Oversized"> Oversized T-Shirts</span>
+                    <span class="filter-count">1</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterCategory" value="Sports / Jerseys"> Sports T-Shirts / Jerseys</span>
+                    <span class="filter-count">1</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterCategory" value="Hoodies"> Hoodies & Fleece</span>
+                    <span class="filter-count">2</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterCategory" value="Corporate Uniforms"> Corporate Uniforms</span>
+                    <span class="filter-count">1</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterCategory" value="Promotional T-Shirts"> Promotional T-Shirts</span>
+                    <span class="filter-count">1</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Fabric Filter -->
+            <div class="filter-group">
+              <h4 class="filter-title">Fabric Type</h4>
+              <ul class="filter-list">
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterFabric" value="all" checked> All Fabrics</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterFabric" value="Combed"> 100% Combed Cotton</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterFabric" value="Pique"> Cotton / Poly Pique</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterFabric" value="AeroDry"> AeroDry Polyester</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterFabric" value="Fleece"> Brushed Fleece / Terry</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterFabric" value="Supima"> American Supima Cotton</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Color Palette Filter -->
+            <div class="filter-group">
+              <h4 class="filter-title">Color Palette</h4>
+              <ul class="filter-list">
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterColor" value="all" checked> All Colors</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterColor" value="Black"> Black / Charcoal</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterColor" value="White"> White / Chalk / Cream</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterColor" value="Terracotta"> Terracotta / Rust</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterColor" value="Navy"> Navy / Naval Blue</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterColor" value="Grey"> Heather Grey / Steel</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Customization Filter -->
+            <div class="filter-group">
+              <h4 class="filter-title">Customization Suitability</h4>
+              <ul class="filter-list">
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterCustomization" value="all" checked> All Capabilities</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterCustomization" value="embroidery"> Embroidery Compatible</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterCustomization" value="Screen Printing"> Screen Printing Ready</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="filter-item-label">
+                    <span><input type="radio" name="filterCustomization" value="DTG"> DTG Digital Direct</span>
+                  </label>
+                </li>
+              </ul>
+            </div>
+
+          </aside>
+
+          <!-- Product Listing Grid & Top Bar -->
+          <div>
+            <div class="catalogue-top-bar">
+              <div class="catalogue-count-info" id="productCountDisplay">
+                Showing <strong>10</strong> bulk apparel styles
+              </div>
+
+              <div class="catalogue-sort-wrap">
+                <input type="text" id="productSearchInput" class="form-control catalogue-search-input" placeholder="Search by name, GSM, fabric...">
+                <select id="productSortSelect" class="form-control" style="width: auto; padding: 10px 14px;">
+                  <option value="newest">Sort: Catalog Order</option>
+                  <option value="name-asc">Name (A &rarr; Z)</option>
+                  <option value="name-desc">Name (Z &rarr; A)</option>
+                  <option value="moq-asc">MOQ (Low &rarr; High)</option>
+                  <option value="moq-desc">MOQ (High &rarr; Low)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Injected Product Grid -->
+            <div class="product-grid" id="productCatalogGrid">
+              <!-- Dynamically populated by catalogue.js -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom Action CTA -->
+    <section class="section-tight section-bg-beige">
+      <div class="container text-center">
+        <h3 style="margin-bottom: 12px;">Need a Completely Custom Fabric Mill Run?</h3>
+        <p style="color: var(--text-muted-grey); max-width: 600px; margin: 0 auto 24px auto;">
+          For enterprise orders exceeding 500 units, we knit custom Pantone-dyed yarns and bespoke collar profiles tailored to corporate brand manuals.
+        </p>
+        <a href="contact.html?inquiry=custom-mill" class="btn btn-secondary">Inquire About Mill Customization &rarr;</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Reusable Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <div class="brand-logo" style="color: #FFFFFF;">
+            <span class="brand-mark">V</span>
+            <span>VANGUARD <span style="font-weight: 300; font-size: 1.1rem; color: var(--accent-terracotta);">TEXTILE CO.</span></span>
+          </div>
+          <p>
+            Dedicated B2B manufacturer of custom bulk T-shirts, premium polos, and institutional workwear. Direct wholesale supply with tailored size matrices and precision print decoration.
+          </p>
+          <span class="demo-disclaimer-pill">Corporate Frontend Demonstration</span>
+        </div>
+
+        <div>
+          <h4>Navigation</h4>
+          <ul class="footer-links-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Our Mill</a></li>
+            <li><a href="collections.html">Garment Catalogue</a></li>
+            <li><a href="customization.html">Customization & Printing</a></li>
+            <li><a href="portfolio.html">Client Portfolio</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="bulk-quote.html">Smart Bulk Builder</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Collections</h4>
+          <ul class="footer-links-list">
+            <li><a href="collections.html?category=Round Neck">Round Neck T-Shirts</a></li>
+            <li><a href="collections.html?category=Polo">Pique Polo Shirts</a></li>
+            <li><a href="collections.html?category=Oversized">Oversized Streetwear</a></li>
+            <li><a href="collections.html?category=Sports / Jerseys">AeroDry Sports Jerseys</a></li>
+            <li><a href="collections.html?category=Hoodies">Heavyweight Hoodies</a></li>
+            <li><a href="collections.html?category=Corporate Uniforms">WorkTech Uniforms</a></li>
+            <li><a href="collections.html?category=Promotional T-Shirts">Campaign Promotional</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Manufacturing HQ</h4>
+          <div class="footer-contact-details">
+            <div class="contact-detail-item">
+              <span>📍</span>
+              <span>Industrial Apparel Zone, Sector 4, Textile Corridor, Mumbai &bull; 400013 [Placeholder]</span>
+            </div>
+            <div class="contact-detail-item">
+              <span>✉️</span>
+              <span>b2b-orders@vanguardtextiles.demo [Demo Placeholder]</span>
+            </div>
+            <div class="contact-detail-item">
+              <span>📞</span>
+              <span>+91 (022) 5550-B2B-QUOTE [Demo Placeholder]</span>
+            </div>
+            <div class="contact-detail-item">
+              <span>🕒</span>
+              <span>Mon – Sat: 09:00 to 19:00 IST</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 Vanguard Textile Co. All rights reserved. B2B Wholesale Platform.</div>
+        <div class="footer-legal-links">
+          <a href="#" data-policy="privacy">Privacy Policy</a>
+          <a href="#" data-policy="terms">Terms & Conditions</a>
+          <a href="#" data-policy="refund">Refund / Cancellation Policy</a>
+          <a href="#" data-policy="shipping">Shipping & Delivery Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Policy Modal Container -->
+  <div class="modal-overlay" id="policyModalOverlay" role="dialog" aria-modal="true" aria-labelledby="policyModalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="policyModalTitle" style="font-size: 1.3rem;">Company Policy</h3>
+        <button class="modal-close-btn" id="policyModalClose" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body" id="policyModalBody" style="line-height: 1.7; font-size: 0.92rem;"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('policyModalOverlay').classList.remove('is-active'); document.body.style.overflow=''">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/products.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/catalogue.js"></script>
+</body>
+</html>
